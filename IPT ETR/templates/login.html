@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindScope Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-CmKfK3i3D3eabJw7tR5QxWBXr5Q1u9YsqgU2EiwfLd8bgAPv2C+zszkQKKvKM6cf" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="login-body">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="brand-mark small"></div>
+            <div>
+                <h1>Welcome back</h1>
+                <p>Sign in to access the MindScope analytics dashboard.</p>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category if category else 'info' }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" class="login-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group password-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+                <div class="form-check show-password-check">
+                    <input class="form-check-input password-toggle" type="checkbox" id="show_password" data-target="password">
+                    <label class="form-check-label" for="show_password">Show password</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-large">Login</button>
+        </form>
+
+        <div class="form-footer">
+            <p>New here? <a href="{{ url_for('register') }}">Create a new account</a></p>
+        </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-FloU3QvF1Fomkyp0TRMeZBq1VgJrbHg6ZqEjmt5dYnIYVZx9c4O+Nn1DviO6Xos9" crossorigin="anonymous"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
