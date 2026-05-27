@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block title %}Learnings | HILOM{% endblock %}
+{% block content %}
+<h2>Member Tasks, Learnings, and Realizations</h2>
+<p class="text-muted">Replace the member names with your actual group members before printing.</p>
+<div class="panel">
+    <table class="table table-bordered align-middle">
+        <thead><tr><th>Name</th><th>Assigned Task</th><th>Learning / Realization</th></tr></thead>
+        <tbody>
+        {% for member in members %}
+            <tr>
+                <td>{{ member.name }}</td>
+                <td>{{ member.task }}</td>
+                <td>{{ member.learning }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

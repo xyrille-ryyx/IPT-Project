@@ -1,0 +1,138 @@
+{% extends "layout.html" %}
+{% block title %}Account Management | HILOM{% endblock %}
+
+{% block content %}
+<h2>Account Management</h2>
+<p class="text-muted">
+    Admin can add, promote, demote, and remove user accounts through the MySQL database.
+</p>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="panel">
+            <h5>Add New User</h5>
+
+            <form method="post" action="{{ url_for('accounts') }}">
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="text" name="password" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Role</label>
+                    <select name="role" class="form-select" required>
+                        <option value="">Select role</option>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">
+                    Add User
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="panel">
+            <h5>User Accounts</h5>
+
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th width="260">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email or "No email" }}</td>
+                            <td>
+                                {% if user.role == "admin" %}
+                                    <span class="badge bg-primary">Admin</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">User</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if user.username == session.get("user") %}
+                                    <span class="text-muted small">Current Account</span>
+                                {% else %}
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        {% if user.role == "user" %}
+                                            <a href="{{ url_for('promote_user', user_id=user.id) }}"
+                                               class="btn btn-sm btn-success"
+                                               onclick="return confirm('Promote this user to admin?')">
+                                                Promote
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ url_for('demote_user', user_id=user.id) }}"
+                                               class="btn btn-sm btn-warning"
+                                               onclick="return confirm('Demote this admin to regular user?')">
+                                                Demote
+                                            </a>
+                                        {% endif %}
+
+                                        <a href="{{ url_for('delete_user', user_id=user.id) }}"
+                                           class="btn btn-sm btn-danger"
+                                           onclick="return confirm('Are you sure you want to remove this user?')">
+                                            Remove
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel mt-4">
+    <h5>Recent User Actions</h5>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Action</th>
+                    <th>Date and Time</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for action in actions %}
+                <tr>
+                    <td>{{ action.username }}</td>
+                    <td>{{ action.action }}</td>
+                    <td>{{ action.created_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

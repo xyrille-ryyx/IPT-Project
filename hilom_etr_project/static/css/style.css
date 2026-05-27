@@ -1,0 +1,179 @@
+body {
+    background: #f4f7fb;
+    font-family: Arial, sans-serif;
+    color: #1f2937;
+    margin: 0;
+}
+
+.app-shell {
+    min-height: 100vh;
+    display: flex;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 255px;
+    background: linear-gradient(180deg, #1f3b73, #16213e);
+    color: white;
+    padding: 24px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar-logo-wrap {
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.sidebar-logo {
+    width: 82px;
+    height: 82px;
+    object-fit: cover;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid rgba(255,255,255,.75);
+}
+
+.sidebar .brand {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+.sidebar-menu a,
+.sidebar-bottom a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 12px 14px;
+    margin-top: 10px;
+    border-radius: 12px;
+}
+
+.sidebar-menu a:hover,
+.sidebar-bottom a:hover {
+    background: rgba(255,255,255,.14);
+}
+
+.sidebar-bottom {
+    width: 100%;
+}
+
+.logout-btn {
+    background: rgba(255,255,255,.10);
+}
+
+.logout-btn:hover {
+    background: #dc3545 !important;
+}
+
+/* MAIN CONTENT */
+.content {
+    margin-left: 255px;
+    padding: 28px;
+    width: calc(100% - 255px);
+}
+
+/* LOGIN AND REGISTER PAGE */
+.login-content {
+    margin-left: 0;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 28px;
+}
+
+.login-card {
+    width: 430px;
+    background: white;
+    padding: 35px;
+    border-radius: 22px;
+    box-shadow: 0 15px 50px rgba(0,0,0,.08);
+}
+
+.login-logo {
+    width: 95px;
+    height: 95px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #e5e7eb;
+}
+
+.login-card h1 {
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: #1f3b73;
+}
+
+/* CARDS AND PANELS */
+.kpi-card,
+.panel {
+    background: white;
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 8px 30px rgba(31,59,115,.08);
+}
+
+.kpi-card span {
+    display: block;
+    font-size: 13px;
+    color: #6b7280;
+    min-height: 38px;
+}
+
+.kpi-card strong {
+    font-size: 24px;
+    color: #1f3b73;
+}
+
+/* CHARTS AND TABLES */
+.chart-img {
+    width: 100%;
+    max-height: 360px;
+    object-fit: contain;
+}
+
+.table {
+    font-size: 14px;
+}
+
+/* FLASH MESSAGES */
+.message-box {
+    position: fixed;
+    top: 20px;
+    right: 25px;
+    z-index: 9999;
+    width: 350px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 800px) {
+    .sidebar {
+        position: static;
+        width: 100%;
+        min-height: auto;
+    }
+
+    .app-shell {
+        display: block;
+    }
+
+    .content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 430px;
+    }
+}
