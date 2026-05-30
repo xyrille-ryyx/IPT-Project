@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block title %}Create Account | HILOM{% endblock %}
+
+{% block content %}
+<div class="login-card">
+    <div class="text-center mb-3">
+        <img src="{{ url_for('static', filename='images/logo.jpg') }}" class="login-logo" alt="HILOM Logo">
+    </div>
+
+    <h1 class="text-center mb-2">HILOM</h1>
+    <p class="text-center text-muted mb-4">Create New User Account</p>
+
+    <form method="post" action="{{ url_for('register') }}">
+        <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" name="username" class="form-control" required>
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" id="password" class="form-control" required>
+        </div>
+
+        <div class="form-check show-password-check mb-3">
+            <input class="form-check-input password-toggle" type="checkbox" id="show_password" data-target="password">
+            <label class="form-check-label" for="show_password">Show password</label>
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="confirm_password" id="confirm_password" class="form-control" required>
+        </div>
+
+        <div class="form-check show-password-check mb-3">
+            <input class="form-check-input password-toggle" type="checkbox" id="show_confirm_password" data-target="confirm_password">
+            <label class="form-check-label" for="show_confirm_password">Show password</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">
+            Create Account
+        </button>
+    </form>
+
+    <div class="text-center mt-3">
+        <a href="{{ url_for('login') }}" class="text-decoration-none">
+            Already have an account? Login
+        </a>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll(".password-toggle").forEach(function(toggle) {
+    toggle.addEventListener("change", function() {
+        const targetId = this.getAttribute("data-target");
+        const passwordInput = document.getElementById(targetId);
+
+        if (this.checked) {
+            passwordInput.type = "text";
+        } else {
+            passwordInput.type = "password";
+        }
+    });
+});
+
+</script>
+{% endblock %}

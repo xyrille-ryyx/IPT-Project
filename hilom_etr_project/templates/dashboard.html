@@ -1,0 +1,285 @@
+{% extends "layout.html" %}
+{% block title %}Dashboard | HILOM{% endblock %}
+
+{% block content %}
+<h2>Data Visualization Dashboard</h2>
+<p class="text-muted">
+    Preprocessed CSV dataset analyzed using Pandas, OOP classes, Flask, and Matplotlib.
+</p>
+
+<div class="panel mt-3 mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div>
+            <h5 class="mb-1">Dashboard Filters</h5>
+            <p class="text-muted mb-0">
+                Filter the charts, KPI cards, descriptive statistics, and high-risk records.
+            </p>
+        </div>
+
+        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-sm">
+            Reset Filters
+        </a>
+    </div>
+
+    <form method="get" action="{{ url_for('dashboard') }}">
+        <div class="row g-4">
+
+            <div class="col-lg-3 col-md-6">
+                <label class="form-label fw-bold">Gender</label>
+
+                <div class="radio-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gender" id="gender_all" value=""
+                               {% if filter_values.gender == "" %}checked{% endif %}>
+                        <label class="form-check-label" for="gender_all">All genders</label>
+                    </div>
+
+                    {% for gender in filter_options.genders %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gender" id="gender_{{ loop.index }}"
+                               value="{{ gender }}" {% if filter_values.gender == gender %}checked{% endif %}>
+                        <label class="form-check-label" for="gender_{{ loop.index }}">
+                            {{ gender|title }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <label class="form-label fw-bold">Platform Usage</label>
+
+                <div class="radio-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="platform" id="platform_all" value=""
+                               {% if filter_values.platform == "" %}checked{% endif %}>
+                        <label class="form-check-label" for="platform_all">All platforms</label>
+                    </div>
+
+                    {% for platform in filter_options.platforms %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="platform" id="platform_{{ loop.index }}"
+                               value="{{ platform }}" {% if filter_values.platform == platform %}checked{% endif %}>
+                        <label class="form-check-label" for="platform_{{ loop.index }}">
+                            {{ platform }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <label class="form-label fw-bold">Social Interaction</label>
+
+                <div class="radio-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="social_level" id="social_all" value=""
+                               {% if filter_values.social_level == "" %}checked{% endif %}>
+                        <label class="form-check-label" for="social_all">All levels</label>
+                    </div>
+
+                    {% for level in filter_options.social_levels %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="social_level" id="social_{{ loop.index }}"
+                               value="{{ level }}" {% if filter_values.social_level == level %}checked{% endif %}>
+                        <label class="form-check-label" for="social_{{ loop.index }}">
+                            {{ level|title }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <label class="form-label fw-bold">Depression Label</label>
+
+                <div class="radio-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="depression" id="depression_all" value=""
+                               {% if filter_values.depression == "" %}checked{% endif %}>
+                        <label class="form-check-label" for="depression_all">All records</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="depression" id="depression_yes" value="1"
+                               {% if filter_values.depression == "1" %}checked{% endif %}>
+                        <label class="form-check-label" for="depression_yes">With depression label</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="depression" id="depression_no" value="0"
+                               {% if filter_values.depression == "0" %}checked{% endif %}>
+                        <label class="form-check-label" for="depression_no">Without depression label</label>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="my-4">
+
+        <div class="row g-3">
+            <div class="col-lg-3 col-md-4">
+                <label class="form-label">Minimum Age</label>
+                <select name="min_age" class="form-select">
+                    <option value="">No minimum</option>
+                    {% for age in filter_options.ages %}
+                    <option value="{{ age }}" {% if filter_values.min_age|string == age|string %}selected{% endif %}>
+                        {{ age }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+                <label class="form-label">Maximum Age</label>
+                <select name="max_age" class="form-select">
+                    <option value="">No maximum</option>
+                    {% for age in filter_options.ages %}
+                    <option value="{{ age }}" {% if filter_values.max_age|string == age|string %}selected{% endif %}>
+                        {{ age }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+                <label class="form-label">Minimum Stress</label>
+                <select name="min_stress" class="form-select">
+                    <option value="">No minimum</option>
+                    {% for level in filter_options.stress_levels %}
+                    <option value="{{ level }}" {% if filter_values.min_stress|string == level|string %}selected{% endif %}>
+                        {{ level }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-lg-3 col-md-4">
+                <label class="form-label">Maximum Stress</label>
+                <select name="max_stress" class="form-select">
+                    <option value="">No maximum</option>
+                    {% for level in filter_options.stress_levels %}
+                    <option value="{{ level }}" {% if filter_values.max_stress|string == level|string %}selected{% endif %}>
+                        {{ level }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="col-12 d-flex justify-content-end mt-4">
+            <button type="submit" class="btn btn-primary px-4">
+                Apply Filters
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="row g-3 mb-4">
+    {% for label, value in kpis.items() %}
+    <div class="col-md-2 col-sm-6">
+        <div class="kpi-card">
+            <span>{{ label }}</span>
+            <strong>{{ value }}</strong>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="row g-4">
+
+    <div class="col-lg-6">
+        <div class="panel chart-panel">
+            <h5>Platform Usage</h5>
+            <img src="{{ url_for('static', filename=charts.platform_pie) }}" class="chart-img" alt="Platform Usage chart">
+            <p class="chart-description">
+                This pie chart shows which social media platforms are most used by the students.
+                It helps identify the platform with the highest number of users in the dataset.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="panel chart-panel">
+            <h5>Stress Distribution</h5>
+            <img src="{{ url_for('static', filename=charts.stress_histogram) }}" class="chart-img" alt="Stress Distribution chart">
+            <p class="chart-description">
+                This histogram shows how student stress levels are spread across the dataset.
+                If many students are in higher stress levels, it may indicate a greater mental health concern.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="panel chart-panel">
+            <h5>Average Stress by Age</h5>
+            <img src="{{ url_for('static', filename=charts.stress_by_age) }}" class="chart-img" alt="Average Stress by Age chart">
+            <p class="chart-description">
+                This line chart compares the average stress level of students by age.
+                It helps determine which age group tends to have higher or lower stress.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="panel chart-panel">
+            <h5>Social Media Hours vs Sleep Hours</h5>
+            <img src="{{ url_for('static', filename=charts.sleep_vs_social) }}" class="chart-img" alt="Social Media Hours vs Sleep Hours chart">
+            <p class="chart-description">
+                This scatter plot compares daily social media usage with sleep hours.
+                It helps observe whether longer social media use may be connected to shorter sleep time.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="panel chart-panel">
+            <h5>Depression by Platform</h5>
+            <img src="{{ url_for('static', filename=charts.depression_by_platform) }}" class="chart-img" alt="Depression by Platform chart">
+            <p class="chart-description">
+                This bar chart shows the number of students with a depression label per platform.
+                It helps compare which platform group has more depression-labeled records.
+            </p>
+        </div>
+    </div>
+
+</div>
+
+<div class="panel mt-4">
+    <h5>Platform Usage Table</h5>
+    {{ platform_table | safe }}
+</div>
+
+<div class="panel mt-4">
+    <h5>Descriptive Statistics</h5>
+    <div class="table-responsive">
+        {{ summary_table | safe }}
+    </div>
+</div>
+<!-- Hidden div to pass session data safely -->
+<div id="login-success-data"
+     data-login-success="{{ 'true' if session.get('login_success_alert') else 'false' }}"
+     data-username="{{ session.get('user', '') }}">
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const loginDiv = document.getElementById('login-success-data');
+    const loginSuccess = loginDiv.dataset.loginSuccess === 'true';
+    const username = loginDiv.dataset.username;
+
+    if (loginSuccess) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Login Successful',
+            text: `Welcome back, ${username}!`,
+            confirmButtonColor: '#3085d6'
+        }).then(() => {
+            fetch('{{ url_for("clear_login_alert") }}');
+        });
+    }
+});
+</script>
+{% endblock %}

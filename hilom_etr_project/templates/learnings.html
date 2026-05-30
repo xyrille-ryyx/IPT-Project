@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block title %}Learnings | HILOM{% endblock %}
+{% block content %}
+<h2>Members, Learnings, and Realizations</h2>
+<div class="panel">
+    <table class="table table-bordered align-middle">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Learning / Realization</th>
+        </tr>
+    </thead>
+        <tbody>
+        {% for member in members %}
+            <tr>
+                <td>{{ member.name }}</td>
+                <td>{{ member.learning }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

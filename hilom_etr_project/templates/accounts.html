@@ -1,0 +1,190 @@
+{% extends "layout.html" %}
+{% block title %}Account Management | HILOM{% endblock %}
+
+{% block content %}
+<h2>Account Management</h2>
+<p class="text-muted">
+    Admin can add, promote, demote, and remove user accounts through the MySQL database.
+</p>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="panel">
+            <h5>Add New User</h5>
+
+            <form id="addUserForm" method="post" action="{{ url_for('accounts') }}">
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="text" name="password" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Role</label>
+                    <select name="role" class="form-select" required>
+                        <option value="">Select role</option>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">
+                    Add User
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="panel">
+            <h5>User Accounts</h5>
+
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th width="260">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.username }}</td>
+
+                            <td>
+                                {% if user.role == "admin" %}
+                                    <span class="badge bg-primary">Admin</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">User</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if user.username == session.get("user") %}
+                                    <span class="text-muted small">Current Account</span>
+                                {% else %}
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        {% if user.role == "user" %}
+                                            <button class="btn btn-sm btn-success action-btn" data-action="promote" data-user-id="{{ user.id }}">Promote</button>
+                                        {% else %}
+                                            <button class="btn btn-sm btn-warning action-btn" data-action="demote" data-user-id="{{ user.id }}">Demote</button>
+                                        {% endif %}
+
+                                        <button class="btn btn-sm btn-danger action-btn" data-action="delete" data-user-id="{{ user.id }}">Remove</button>
+                                    </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel mt-4">
+    <h5>Recent User Actions</h5>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Action</th>
+                    <th>Date and Time</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for action in actions %}
+                <tr>
+                    <td>{{ action.username }}</td>
+                    <td>{{ action.action }}</td>
+                    <td>{{ action.created_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+// Promote / Demote / Remove confirmation
+document.querySelectorAll('.action-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const action = this.dataset.action;
+        const userId = this.dataset.userId;
+
+        const actionText = action.charAt(0).toUpperCase() + action.slice(1);
+
+        Swal.fire({
+            title: `Are you sure you want to ${actionText}?`,
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: action === 'delete' ? '#dc3545' : '#3085d6',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: `Yes, ${actionText}!`
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let route = '';
+                if(action === 'promote') route = '/promote_user/';
+                else if(action === 'demote') route = '/demote_user/';
+                else if(action === 'delete') route = '/delete_user/';
+
+                window.location.href = `${route}${userId}`;
+            }
+        });
+    });
+});
+
+// Add User SweetAlert
+document.getElementById('addUserForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = this;
+
+    fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form)
+    }).then(response => {
+        if (response.status === 200) {
+            Swal.fire({
+                icon: 'success',
+                title: 'User Added',
+                text: 'The new user account has been added successfully!',
+                confirmButtonColor: '#3085d6'
+            }).then(() => window.location.reload());
+        } else if (response.status === 409) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Username Already Exists',
+                text: 'Please choose another username.',
+                confirmButtonColor: '#dc3545'
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Something went wrong. Please try again.',
+                confirmButtonColor: '#dc3545'
+            });
+        }
+    });
+});
+</script>
+
+{% endblock %}

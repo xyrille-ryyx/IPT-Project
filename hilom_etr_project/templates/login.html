@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block title %}Login | HILOM{% endblock %}
+
+{% block content %}
+<div class="login-card">
+    <div class="text-center mb-3">
+        <img src="{{ url_for('static', filename='images/logo.jpg') }}" class="login-logo" alt="HILOM Logo">
+    </div>
+
+    <h1 class="text-center mb-2">HILOM</h1>
+    <p class="text-center text-muted mb-4">Teen Mental Health Analytics Dashboard</p>
+
+    <form method="post" action="{{ url_for('login') }}" id="loginForm">
+        <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" name="username" class="form-control" required>
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" id="password" class="form-control" required>
+        </div>
+
+        <div class="form-check show-password-check mb-3">
+            <input class="form-check-input password-toggle" type="checkbox" id="show_password" data-target="password">
+            <label class="form-check-label" for="show_password">Show password</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+
+    <div class="text-center mt-3">
+        <a href="{{ url_for('register') }}" class="text-decoration-none">Create new account</a>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+// Show/Hide password toggle
+document.querySelectorAll(".password-toggle").forEach(function(toggle) {
+    toggle.addEventListener("change", function() {
+        const targetId = this.getAttribute("data-target");
+        const passwordInput = document.getElementById(targetId);
+        passwordInput.type = this.checked ? "text" : "password";
+    });
+});
+</script>
+
+{% if login_error %}
+<script>
+Swal.fire({
+    icon: 'error',
+    title: 'Login Failed',
+    text: '{{ login_error | e }}',
+    confirmButtonColor: '#dc3545'
+});
+</script>
+{% endif %}
+{% endblock %}
